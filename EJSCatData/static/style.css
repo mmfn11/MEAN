@@ -1,0 +1,11 @@
+.container{
+    background-color: lightpink;
+    text-align: center;
+}
+.cat1 , .cat2{
+border: solid 2px gray;
+
+}
+h1{
+    color: gray;
+}
