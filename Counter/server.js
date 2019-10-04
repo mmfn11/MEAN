@@ -1,36 +1,41 @@
 var express = require("express");
 
+const session = require('express-session');
+var path = require("path");
+var bodyParser = require('body-parser');
 var app = express();
 
-app.use(express.static(__dirname + "/static"));
 
-app.set('views', __dirname + '/views');
+app.use(bodyParser.urlencoded({ extended: true }));
 
+app.use(express.static(path.join(__dirname, "./static")));
+app.use(session({secret: 'starkey'}));
+
+
+app.set('views', path.join(__dirname, './views'));
 app.set('view engine', 'ejs');
 
-const session = require('express-session');
-app.use(session({
-  secret: 'keyboardkitteh',
-  resave: false,
-  saveUninitialized: true,
-  cookie: { maxAge: 60000 }
-})) 
 
-
-var count=0;
 
 app.get('/', (req, res) => {
-    count++;
-    res.render("index",{count: count});
+
+    if (!req.session.counter){
+        req.session.counter = 1;
+    }
+    else {
+        req.session.counter +=1;
+    }
+
+    res.render("index",{count:req.session.counter});
 });
 
 app.post('/plus', function(req, res) {
-    count ++;
+    req.session.counter +=1;
     res.redirect("/");
 })
 
 app.post('/del', function(req, res) {
-    count = 0;
+    req.session.counter = 0;
     res.redirect("/");
 })
 
